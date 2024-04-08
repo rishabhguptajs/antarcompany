@@ -118,3 +118,40 @@ export const sellerProfileController = async(req, res) => {
     })
   }
 }
+
+export const sellerProfileUpdateController = async(req, res) => {
+  try {
+    const seller = await sellerModel.findOne(req.seller._id);
+    const { name, password, address } = req.body;
+
+    if(seller){
+      seller.name = name || seller.name;
+      seller.address = address || seller.address;
+
+      if(password){
+        seller.password = await hashPassword(password);
+      }
+
+      const updatedSeller = await seller.save();
+
+      res.status(200).json({
+        _id: updatedSeller._id,
+        name: updatedSeller.name,
+        email: updatedSeller.email,
+        address: updatedSeller.address,
+        success: true,
+      })
+    } else {
+      res.status(404).json({
+        message: "Seller not found",
+        success: false,
+      })
+    }
+  } catch (error) {
+    res.status(400).json({
+      message: "Error updating seller profile",
+      error: error.message,
+      success: false,
+    })
+  }
+}
