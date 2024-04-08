@@ -38,7 +38,7 @@ export const sellerRegisterController = async (req, res) => {
     }
   } catch (error) {
     res.status(400).json({
-      message: error.message,
+      message: "Error registering seller",
       success: false,
     })
   }
@@ -86,7 +86,34 @@ export const sellerLoginController = async (req, res) => {
     }
   } catch (error) {
     res.status(400).json({
-      message: error.message,
+      message: "Error logging in seller",
+      success: false,
+    })
+  }
+}
+
+export const sellerProfileController = async(req, res) => {
+  try {
+    const seller = await sellerModel.findOne(req.seller._id).select("-password")
+
+    if (seller) {
+      res.status(200).json({
+        _id: seller._id,
+        name: seller.name,
+        email: seller.email,
+        address: seller.address,
+        success: true,
+      })
+    } else {
+      res.status(404).json({
+        message: "Seller not found",
+        success: false,
+      })
+    }
+  } catch (error) {
+    res.status(400).json({
+      message: "Error fetching seller profile",
+      error: error.message,
       success: false,
     })
   }
