@@ -4,7 +4,6 @@ const categorySchema = mongoose.Schema({
     name:{
         type: String,
         required: true,
-        enum:['Carpets', 'Sarees', 'Chikankari', 'Pottery', 'Wooden Crafts', 'Metal Crafts']
     },
     slug: {
         type: String,
@@ -14,6 +13,7 @@ const categorySchema = mongoose.Schema({
     parentCategory: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
+        default: null,
     },
 })
 
