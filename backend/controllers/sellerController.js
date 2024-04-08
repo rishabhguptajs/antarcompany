@@ -1,5 +1,6 @@
 import { comparePasswords, hashPassword } from "../helpers/authHelper.js"
 import sellerModel from "../models/sellerModel.js"
+import productModel from "../models/productModel.js"
 import JWT from "jsonwebtoken"
 
 export const sellerRegisterController = async (req, res) => {
@@ -152,6 +153,18 @@ export const sellerProfileUpdateController = async(req, res) => {
       message: "Error updating seller profile",
       error: error.message,
       success: false,
+    })
+  }
+}
+
+export const sellerProductAddController = async(req, res) => {
+  try {
+    const { name, price, image, category, countInStock, description } = req.body;
+  } catch (error) {
+    res.status(400).json({
+      message: "Error adding product",
+      success: false,
+      error: error.message
     })
   }
 }
