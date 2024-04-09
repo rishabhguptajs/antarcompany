@@ -1,13 +1,13 @@
 import express from 'express';
 import { sellerLoginController, sellerProductAddController, sellerProfileController, sellerProfileUpdateController, sellerRegisterController } from '../controllers/sellerController.js';
-import { verifyToken } from '../middlewares/authMiddleware.js';
+import { verifySeller } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
 router.post('/register', sellerRegisterController);
 router.post('/login', sellerLoginController);
-router.get('/profile', verifyToken, sellerProfileController);
-router.put('/profile/update', verifyToken, sellerProfileUpdateController);
-router.post('/product/add', verifyToken, sellerProductAddController);
+router.get('/profile', verifySeller, sellerProfileController);
+router.put('/profile/update', verifySeller, sellerProfileUpdateController);
+router.post('/product/add', verifySeller, sellerProductAddController);
 
 export default router;
