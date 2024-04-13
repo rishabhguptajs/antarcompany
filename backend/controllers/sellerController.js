@@ -2,6 +2,7 @@ import { comparePasswords, hashPassword } from "../helpers/authHelper.js"
 import sellerModel from "../models/sellerModel.js"
 import productModel from "../models/productModel.js"
 import JWT from "jsonwebtoken"
+import mongoose from "mongoose"
 
 export const sellerRegisterController = async (req, res) => {
   const { name, email, password, address } = req.body
@@ -240,3 +241,106 @@ export const sellerProductAddController = async(req, res) => {
   }
 }
 
+export const sellerProductViewController = async(req, res) => {
+  try {
+    const productId = req.params.id;
+    const objId = new mongoose.Types.ObjectId(productId);
+    const product = await productModel.findOne(objId);
+
+    if(product){
+      res.status(200).json({
+        _id: product._id,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+        category: product.category,
+        countInStock: product.countInStock,
+        description: product.description,
+        seller: product.seller,
+        success: true,
+      })
+    } else {
+      res.status(404).json({
+        message: "Product not found",
+        success: false,
+      })
+    }
+  } catch (error) {
+    res.status(400).json({
+      message: "Error fetching product",
+      success: false,
+      error: error.message
+    })
+  }
+}
+
+export const sellerProductUpdateController = async(req, res) => {
+  try {
+    const productId = req.params.id;
+    const objId = new mongoose.Types.ObjectId(productId);
+    const product = await productModel.findOne(objId);
+
+    if(product){
+      const { name, price, image, category, countInStock, description } = req.body;
+
+      product.name = name || product.name;
+      product.price = price || product.price;
+      product.image = image || product.image;
+      product.category = category || product.category;
+      product.countInStock = countInStock || product.countInStock;
+      product.description = description || product.description;
+
+      const updatedProduct = await product.save();
+
+      res.status(200).json({
+        _id: updatedProduct._id,
+        name: updatedProduct.name,
+        price: updatedProduct.price,
+        image: updatedProduct.image,
+        category: updatedProduct.category,
+        countInStock: updatedProduct.countInStock,
+        description: updatedProduct.description,
+        seller: updatedProduct.seller,
+        success: true,
+      })
+    } else {
+      res.status(404).json({
+        message: "Product not found",
+        success: false,
+      })
+    }
+  } catch (error) {
+    res.status(400).json({
+      message: "Error updating product",
+      success: false,
+      error: error.message
+    })
+  }
+}
+
+export const sellerProductDeleteController = async(req, res) => {
+  try {
+    const productId = req.params.id;
+    const objId = new mongoose.Types.ObjectId(productId);
+    const product = await productModel.findOne(objId);
+
+    if(product){
+      await product.deleteOne()
+      res.status(200).json({
+        message: "Product removed",
+        success: true,
+      })
+    } else {
+      res.status(404).json({
+        message: "Product not found",
+        success: false,
+      })
+    }
+  } catch (error) {
+    res.status(400).json({
+      message: "Error deleting product",
+      success: false,
+      error: error.message
+    })
+  }
+}
