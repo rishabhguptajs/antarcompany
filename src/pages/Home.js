@@ -6,9 +6,8 @@ import Layout from "../components/Layout.js"
 const Home = () => {
   return (
     <Layout>
-      <div className="">
-        <h1>Welcome to Your Website</h1>
-        <p>This is the home page of your website.</p>
+      <div className="h-[100vh]">
+
       </div>
     </Layout>
   )

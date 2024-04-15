@@ -116,3 +116,64 @@ export const userLoginController = async (req, res) => {
     })
   }
 }
+
+export const userGetProfileController = async (req, res) => {
+  try {
+    const user = await userModel.findOne(req.user._id).select("-password");
+
+    if (user) {
+      res.status(200).json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        success: true,
+      })
+    } else {
+      res.status(404).json({
+        message: "User not found",
+        success: false,
+      })
+    }
+  } catch (error) {
+    res.status(400).json({
+      message: "Error while getting user profile",
+      error: error.message,
+      success: false,
+    })
+  }
+}
+
+export const userProfileUpdateController = async (req, res) => {
+  try {
+    const user = await userModel.findOne(req.user._id);
+
+    if (user) {
+      user.name = req.body.name || user.name;
+      user.email = req.body.email || user.email;
+
+      if (req.body.password) {
+        user.password = await hashPassword(req.body.password);
+      }
+
+      const updatedUser = await user.save();
+
+      res.status(200).json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        success: true,
+      })
+    } else {
+      res.status(404).json({
+        message: "User not found",
+        success: false,
+      })
+    }
+  } catch (error) {
+    res.status(400).json({
+      message: "Error while updating user profile",
+      error: error.message,
+      success: false,
+    })
+  }
+}
